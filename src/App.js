@@ -1,9 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './App.css';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Square from './components/Square';
+import { Patterns } from './Patterns';
 function App() {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", "", ""])
   const [player, setPlayer] = useState("x");
+  const [result, setResult] = useState({ winner: "none", state: "none" })
+
+  useEffect(() => {
+    checkWin();
+  }, [board]);
+
+  useEffect(() => {
+    if (result.state !== 'none') {
+      alert(`Game Finished! Winning Player: ${result.winner}`)
+    }
+
+  }, [result])
   const chooseSquare = (square) => {
     setBoard(
       board.map((val, idx) => {
@@ -18,6 +32,22 @@ function App() {
     } else {
       setPlayer('x')
     }
+  }
+  const checkWin = () => {
+    Patterns.forEach((currentPattern) => {
+      const firstPlayer = board[currentPattern[0]];
+      if (firstPlayer === '') return;
+      let foundWinningPattern = true
+      currentPattern.forEach((idx) => {
+        if (board[idx] !== firstPlayer) {
+          foundWinningPattern = false
+
+        }
+      })
+      if (foundWinningPattern) {
+        setResult({ winner: player, state: "won" })
+      }
+    })
   }
   return (
     <div className="App">
