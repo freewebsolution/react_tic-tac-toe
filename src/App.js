@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import './App.css';
 import { useState, useEffect } from 'react'
@@ -5,21 +6,23 @@ import Square from './components/Square';
 import { Patterns } from './Patterns';
 function App() {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", "", ""])
-  const [player, setPlayer] = useState("o");
+  const [player, setPlayer] = useState("x");
   const [result, setResult] = useState({ winner: "none", state: "none" })
 
   useEffect(() => {
+    checkWin();
+    checkIfTie();
     if (player === 'x') {
       setPlayer("o")
     } else {
       setPlayer('x')
     }
-    checkWin();
   }, [board]);
 
   useEffect(() => {
     if (result.state !== 'none') {
-      alert(`Game Finished! Winning Player: ${result.winner}`)
+      alert(`Game Finished! Winning Player: ${result.winner}`);
+      restartGame();
     }
 
   }, [result])
@@ -48,6 +51,23 @@ function App() {
         setResult({ winner: player, state: "won" })
       }
     })
+  }
+
+  const checkIfTie =() => {
+    let filled = true;
+    board.forEach((square)=>{
+      if(square === ''){
+        filled = false;
+      }
+    })
+
+    if(filled){
+      setResult({winner:"No one",state:'Tie'})
+    }
+  }
+  const restartGame = () => {
+    setBoard(["", "", "", "", "", "", "", "", "", ""]);
+    setPlayer("x");
   }
   return (
     <div className="App">
