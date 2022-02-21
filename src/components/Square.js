@@ -1,8 +1,8 @@
 import React from 'react';
-
-function Square({val,choseSquare}) {
+import '../App.css';
+function Square({val,chooseSquare}) {
     return (
-        <div>
+        <div className='square' onClick={chooseSquare}>
            {val} 
         </div>
     );
