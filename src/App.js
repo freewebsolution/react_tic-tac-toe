@@ -5,10 +5,15 @@ import Square from './components/Square';
 import { Patterns } from './Patterns';
 function App() {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", "", ""])
-  const [player, setPlayer] = useState("x");
+  const [player, setPlayer] = useState("o");
   const [result, setResult] = useState({ winner: "none", state: "none" })
 
   useEffect(() => {
+    if (player === 'x') {
+      setPlayer("o")
+    } else {
+      setPlayer('x')
+    }
     checkWin();
   }, [board]);
 
@@ -27,11 +32,6 @@ function App() {
         return val
       })
     );
-    if (player === 'x') {
-      setPlayer("o")
-    } else {
-      setPlayer('x')
-    }
   }
   const checkWin = () => {
     Patterns.forEach((currentPattern) => {
