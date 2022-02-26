@@ -23,6 +23,7 @@ const App = (props) => {
       })
   }, [])
   console.log('render',players.length,'players')
+
   useEffect(() => {
     checkWin();
     checkIfTie();
@@ -44,10 +45,14 @@ const App = (props) => {
     e.preventDefault()
     const playerObject = {
       name: newPlayer,
-      id: players.length + 1
+      email:newPlayer,
     }
-    setPlayers(players.concat(playerObject))
-    setNewPlayer('')
+    axios
+      .post('http://tris_back.test/api/v1/players',playerObject)
+      .then(res => {
+        console.log(res)
+      })
+
   }
 
   const handlePlayerChange = (event) => {
