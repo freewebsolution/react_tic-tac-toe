@@ -3,12 +3,26 @@
 import './App.css';
 import { useState, useEffect } from 'react'
 import Square from './components/Square';
+import Players from './components/Players';
 import { Patterns } from './Patterns';
-function App() {
+import axios from 'axios';
+const App = (props) => {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", "", ""])
   const [player, setPlayer] = useState("x");
   const [result, setResult] = useState({ winner: "none", state: "none" })
+  const [players, setPlayers] = useState([]);
+  const [newPlayer, setNewPlayer] = useState('')
 
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://tris_back.test/api/v1/players')
+      .then(res => {
+        console.log('promise fullfilled')
+        setPlayers(res.data)
+      })
+  }, [])
+  console.log('render',players.length,'players')
   useEffect(() => {
     checkWin();
     checkIfTie();
@@ -26,6 +40,20 @@ function App() {
     }
 
   }, [result])
+  const addPlayers = (e) => {
+    e.preventDefault()
+    const playerObject = {
+      name: newPlayer,
+      id: players.length + 1
+    }
+    setPlayers(players.concat(playerObject))
+    setNewPlayer('')
+  }
+
+  const handlePlayerChange = (event) => {
+    console.log(event.target.value)
+    setNewPlayer(event.target.value)
+  }
   const chooseSquare = (square) => {
     setBoard(
       board.map((val, idx) => {
@@ -53,16 +81,16 @@ function App() {
     })
   }
 
-  const checkIfTie =() => {
+  const checkIfTie = () => {
     let filled = true;
-    board.forEach((square)=>{
-      if(square === ''){
+    board.forEach((square) => {
+      if (square === '') {
         filled = false;
       }
     })
 
-    if(filled){
-      setResult({winner:"No one",state:'Tie'})
+    if (filled) {
+      setResult({ winner: "No one", state: 'Tie' })
     }
   }
   const restartGame = () => {
@@ -71,6 +99,10 @@ function App() {
   }
   return (
     <div className="App">
+      <form action="" onSubmit={addPlayers}>
+        <input value={newPlayer} onChange={handlePlayerChange} />
+        <button type='submit'>Add</button>
+      </form>
       <div className='board'>
         <div className='row'>
           <Square val={board[0]} chooseSquare={() => chooseSquare(0)} />
